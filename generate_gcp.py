@@ -68,11 +68,8 @@ def query_gaode(gcps_84):
 
     query_result = []
     for i in xrange(0,len(gd_array)):
-        gd_x = float(gd_array[i].split(',')[0])
-        gd_y = float(gd_array[i].split(',')[1])
-        gcp84 = gcps_84[i]
-        gcp84_x = gcp84[0]
-        gcp84_y = gcp84[1]
+        gd_x, gd_y = map(float,gd_array[i].split(','))
+        gcp84_x, gcp84_y = gcps_84[i]
         local_trans_y, local_trans_x = eviltransform.transform(
             round(gcp84_y, 6), round(gcp84_x, 6))
         delta_x = gd_x - local_trans_x
@@ -93,6 +90,10 @@ def query_gaode(gcps_84):
 
 
 def generate_gcp_gaode(interval):
+    """
+    generate_gcp_gaode(interval) , interval by decimal degree
+    """
+
     gcps_84 = generate_gcp_origin(interval)
 
     results = []
@@ -105,7 +106,7 @@ def generate_gcp_gaode(interval):
         results += query_gaode(query_gcps)
         start += step
         # geode api QPS limits
-        time.sleep(1)
+        time.sleep(0.1)
 
     results += query_gaode(gcps_84[start:len(gcps_84)])
 
@@ -116,4 +117,5 @@ def generate_gcp_gaode(interval):
     
     logging.info('finish.')
 
-generate_gcp_gaode(1)
+
+generate_gcp_gaode(10)
