@@ -3,7 +3,7 @@ import time
 import json
 import logging
 import config
-import wgs2gcj02
+import eviltransform
 
 logging.basicConfig(level=logging.DEBUG)
 
@@ -73,7 +73,7 @@ def query_gaode(gcps_84):
         gcp84 = gcps_84[i]
         gcp84_x = gcp84[0]
         gcp84_y = gcp84[1]
-        local_trans_y, local_trans_x = wgs2gcj02.transform(
+        local_trans_y, local_trans_x = eviltransform.transform(
             round(gcp84_y, 6), round(gcp84_x, 6))
         delta_x = gd_x - local_trans_x
         delta_y = gd_y - local_trans_y
