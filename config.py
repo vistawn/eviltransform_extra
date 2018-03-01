@@ -1,4 +1,4 @@
-gaode_key = ''
+gaode_key = 'your gaode api dev key'
 baidu_key = ''
 tengxun_key = ''
 
