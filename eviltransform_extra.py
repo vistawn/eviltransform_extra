@@ -2,7 +2,7 @@ import eviltransform
 from rtree import index
 
 class Eviltransform_extra(object):
-    
+
     __gcps = {}
     p = index.Property()
     p.dimension = 2
@@ -38,6 +38,16 @@ class Eviltransform_extra(object):
         return p['delta_y'], p['delta_x']
 
     def transform(self,lat,lng):
+        """ wgs84 to gcj02
+        
+        Arguments:
+            lat {float} -- latitude in WGS84
+            lng {float} -- longitude in WGS84
+        
+        Returns:
+            {(float,float)} -- (lat,lng) in GCJ02
+        """
+
         to_y, to_x = eviltransform.transform(lat, lng)
         delta_y,delta_x = self.__find_delta(lat,lng)
         return to_y + delta_y, to_x + delta_x

@@ -101,7 +101,3 @@ ENV/
 
 # mypy
 .mypy_cache/
-
-
-# hidden map api key
-config.py

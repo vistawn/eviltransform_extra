@@ -9,6 +9,15 @@ logging.basicConfig(level=logging.DEBUG)
 
 
 def generate_gcp_origin(interval):
+    """Generate WGS84 Controls Points
+    
+    Arguments:
+        interval {float} -- interval decimal degree
+    
+    Returns:
+        {[(lng,lat)]} -- points array
+    """
+
     min_x = config.china_extent['min_lng'] + 0.0
     min_y = config.china_extent['min_lat'] + 0.0
     max_x = config.china_extent['max_lng'] + 0.0
@@ -43,7 +52,7 @@ def generate_gcp_origin(interval):
     return gcps
 
 
-def query_gaode(gcps_84):
+def query_gaode(gcps_84,amap_key):
     req_str = ''
     for i in xrange(0,len(gcps_84)):
         gcp84 = gcps_84[i]
@@ -56,7 +65,7 @@ def query_gaode(gcps_84):
         'locations': req_str,
         'coordsys': 'gps',
         'output': 'json',
-        'key': config.gaode_key
+        'key': amap_key
      }
 
     r = requests.get(
@@ -89,27 +98,29 @@ def query_gaode(gcps_84):
     return query_result
 
 
-def generate_gcp_gaode(interval):
-    """
-    generate_gcp_gaode(interval) , interval by decimal degree
+def generate_gcp_gaode(interval,amap_key):
+    """Generate Control Points File for AMap API
+    https://lbs.amap.com/
+    
+    Arguments:
+        interval {float} -- control grid interval(decimal degree)
+        amap_key {string} -- amap developer key
     """
 
     gcps_84 = generate_gcp_origin(interval)
 
     results = []
-    #results.append('wgs_x,wgs_y,gcj_x,gcj_y,delta_x,delta_y')
 
     step = 40
     start = 0
     while start + step < len(gcps_84):
         query_gcps = gcps_84[start:start+step]
-        results += query_gaode(query_gcps)
+        results += query_gaode(query_gcps,amap_key)
         start += step
         # geode api QPS limits
         time.sleep(0.1)
 
-    results += query_gaode(gcps_84[start:len(gcps_84)])
-
+    results += query_gaode(gcps_84[start:len(gcps_84)], amap_key)
 
 
     with open('gcps_gd', 'w') as newfile:
@@ -118,4 +129,9 @@ def generate_gcp_gaode(interval):
     logging.info('finish.')
 
 
-generate_gcp_gaode(10)
+
+if __name__ == '__main__':
+    interval = raw_input('please input control grid interval(decimal degree):')
+    gaode_key = raw_input('please input amap key:')
+    generate_gcp_gaode(float(interval),gaode_key)
+
