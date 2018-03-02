@@ -11,7 +11,25 @@ min_x = config.test_extent['min_lng'] + 0.0
 min_y = config.test_extent['min_lat'] + 0.0
 max_x = config.test_extent['max_lng'] + 0.0
 max_y = config.test_extent['max_lat'] + 0.0
+interval_x = max_x - min_x
+interval_y = max_y - min_y
 
+def performance_test(points_count):
+
+    print('start transform -- ' + time.ctime())
+    print('init -- ' + time.ctime())
+    start = time.time()
+    trans = eviltransform_extra.Eviltransform_extra()
+    stop = time.time()
+    print('init finish. -- ' + time.ctime())
+    print('init seconds: ' + str(stop - start))
+    start = time.time()
+    for x in xrange(0,points_count):
+        trans.transform(min_y + interval_y * random.random(), min_x + interval_x * random.random())
+    
+    stop = time.time()
+    print('finish. -- ' + time.ctime())
+    print('transform seconds: ' + str(stop - start))
 
 def querygaode(lat,lng):
     reqdata = {
@@ -35,7 +53,7 @@ def test_gaode(sample_count):
     interval_x = max_x - min_x
     interval_y = max_y - min_y
 
-    ex_trans = eviltransform_extra.eviltransform_extra()
+    ex_trans = eviltransform_extra.Eviltransform_extra()
 
     dis_loc = []
     dis_ex = []
@@ -62,4 +80,11 @@ def test_gaode(sample_count):
           ', std_ex:' + str(numpy.std(dis_ex)))
 
 
-test_gaode(30)
+#test_gaode(30)
+
+#performance_test(50000)
+
+
+if __name__ == "__main__":
+    import profile
+    profile.run("performance_test(5000)")
