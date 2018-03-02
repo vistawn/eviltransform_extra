@@ -31,12 +31,12 @@ def performance_test(points_count):
     print('finish. -- ' + time.ctime())
     print('transform seconds: ' + str(stop - start))
 
-def querygaode(lat,lng):
+def querygaode(lat,lng,amapkey):
     reqdata = {
         'locations': str(lng) + ',' + str(lat),
         'coordsys': 'gps',
         'output': 'json',
-        'key': config.gaode_key
+        'key': amapkey
     }
 
     r = requests.get(
@@ -49,7 +49,7 @@ def querygaode(lat,lng):
     return float(gd_coords[1]), float(gd_coords[0])
 
 
-def test_gaode(sample_count):
+def test_gaode(sample_count,amapkey):
     interval_x = max_x - min_x
     interval_y = max_y - min_y
 
@@ -62,7 +62,7 @@ def test_gaode(sample_count):
         q_y = round(min_y + interval_y * random.random(),6)
         loc_y,loc_x = eviltransform.transform(q_y, q_x)
         ex_y, ex_x = ex_trans.transform(q_y,q_x)
-        gaode_y, gaode_x = querygaode(q_y, q_x)
+        gaode_y, gaode_x = querygaode(q_y, q_x, amapkey)
 
         loc_distance = distance_calculator.calculate_distance(gaode_y,gaode_x,loc_y,loc_x)
         ex_distance = distance_calculator.calculate_distance(gaode_y, gaode_x, ex_y, ex_x)
