@@ -25,7 +25,7 @@ def performance_test(points_count):
     print('init seconds: ' + str(stop - start))
     start = time.time()
     for x in xrange(0,points_count):
-        trans.transform(min_y + interval_y * random.random(), min_x + interval_x * random.random())
+        trans.wgs_to_gcj(min_y + interval_y * random.random(), min_x + interval_x * random.random())
     
     stop = time.time()
     print('finish. -- ' + time.ctime())
@@ -61,7 +61,7 @@ def test_gaode(sample_count,amapkey):
         q_x = round(min_x + interval_x * random.random(),6)
         q_y = round(min_y + interval_y * random.random(),6)
         loc_y,loc_x = eviltransform.transform(q_y, q_x)
-        ex_y, ex_x = ex_trans.transform(q_y,q_x)
+        ex_y, ex_x = ex_trans.wgs_to_gcj(q_y,q_x)
         gaode_y, gaode_x = querygaode(q_y, q_x, amapkey)
 
         loc_distance = distance_calculator.calculate_distance(gaode_y,gaode_x,loc_y,loc_x)
@@ -70,7 +70,6 @@ def test_gaode(sample_count,amapkey):
         dis_loc.append(loc_distance)
         dis_ex.append(ex_distance)
         print(loc_distance, ex_distance)
-
         time.sleep(0.1)
     
 
@@ -80,11 +79,24 @@ def test_gaode(sample_count,amapkey):
           ', std_ex:' + str(numpy.std(dis_ex)))
 
 
+def test_transform():
+    ex_trans = eviltransform_extra.Eviltransform_extra()
+
+    for x in xrange(0,10):
+        t_x = 100 + x * random.random()
+        t_y = 35 + x * random.random()
+        wgs_y, wgs_x = (t_y, t_x)
+        y1, x1 = ex_trans.wgs_to_gcj(wgs_y, wgs_x)
+        y, x = ex_trans.gcj_to_wgs(y1, x1, 1e-8)
+
+        print('wgs:({},{}) to_gcj:({},{}) back_to_wgs:({},{})'.format(wgs_y,wgs_x,y1,x1,y,x))
+
+
 #test_gaode(30)
 
 #performance_test(50000)
 
-
 if __name__ == "__main__":
     import profile
     profile.run("performance_test(5000)")
+    test_transform()
