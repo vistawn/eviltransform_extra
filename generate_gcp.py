@@ -7,6 +7,10 @@ import eviltransform
 
 logging.basicConfig(level=logging.DEBUG)
 
+import sys
+if sys.version_info >= (3, 0):
+    xrange = range
+
 
 def generate_gcp_origin(interval):
     """Generate WGS84 Controls Points

@@ -15,7 +15,11 @@ python generate_gcp.py
 ## Transform WGS84 to GCJ02
 
 ```python
-import eviltransform_extra
-trans = eviltransform_extra.Eviltransform_extra()
-gcj_x,gcj_y = trans.transform(45.2,112.8)
+from eviltransform_rectify import Eviltransform_rectify 
+trans = Eviltransform_rectify()
+# wgs84 to gcj
+gcj_lat, gcj_lon = trans.wgs_to_gcj(45.2,112.8)
+
+# gcj to wgs84
+wgs_lat, wgs_lon = trans.gcj_to_wgs(45.2,112.8)
 ```

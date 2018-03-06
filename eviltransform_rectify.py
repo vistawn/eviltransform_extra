@@ -17,7 +17,7 @@ class Eviltransform_rectify(object):
             lines = f.readlines()
             id = 0
             for line in lines:
-                values = map(float, line.split(','))
+                values = list(map(float, line.split(',')))
                 x, y = values[0:2]
                 delta_x, delta_y = values[4:6]
                 gcp = {

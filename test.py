@@ -2,10 +2,13 @@ from __future__ import print_function
 import random, time, requests
 import math, numpy
 import eviltransform
-import eviltransform_rectify
+from eviltransform_rectify import Eviltransform_rectify
 import distance_calculator
 import config
 
+import sys
+if sys.version_info >= (3, 0):
+    xrange = range
 
 min_x = config.test_extent['min_lng'] + 0.0
 min_y = config.test_extent['min_lat'] + 0.0
@@ -19,7 +22,7 @@ def performance_test(points_count):
     print('start transform -- ' + time.ctime())
     print('init -- ' + time.ctime())
     start = time.time()
-    trans = eviltransform_rectify.Eviltransform_rectify()
+    trans = Eviltransform_rectify()
     stop = time.time()
     print('init finish. -- ' + time.ctime())
     print('init seconds: ' + str(stop - start))
@@ -53,7 +56,7 @@ def test_gaode(sample_count,amapkey):
     interval_x = max_x - min_x
     interval_y = max_y - min_y
 
-    ex_trans = eviltransform_rectify.Eviltransform_rectify()
+    ex_trans = Eviltransform_rectify()
 
     dis_loc = []
     dis_ex = []
@@ -80,7 +83,7 @@ def test_gaode(sample_count,amapkey):
 
 
 def test_transform():
-    ex_trans = eviltransform_rectify.Eviltransform_rectify()
+    ex_trans = Eviltransform_rectify()
 
     for x in xrange(0,10):
         t_x = 100 + x * random.random()
