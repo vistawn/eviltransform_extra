@@ -2,7 +2,7 @@ from __future__ import print_function
 import random, time, requests
 import math, numpy
 import eviltransform
-import eviltransform_extra
+import eviltransform_rectify
 import distance_calculator
 import config
 
@@ -19,7 +19,7 @@ def performance_test(points_count):
     print('start transform -- ' + time.ctime())
     print('init -- ' + time.ctime())
     start = time.time()
-    trans = eviltransform_extra.Eviltransform_extra()
+    trans = eviltransform_rectify.Eviltransform_rectify()
     stop = time.time()
     print('init finish. -- ' + time.ctime())
     print('init seconds: ' + str(stop - start))
@@ -53,7 +53,7 @@ def test_gaode(sample_count,amapkey):
     interval_x = max_x - min_x
     interval_y = max_y - min_y
 
-    ex_trans = eviltransform_extra.Eviltransform_extra()
+    ex_trans = eviltransform_rectify.Eviltransform_rectify()
 
     dis_loc = []
     dis_ex = []
@@ -80,7 +80,7 @@ def test_gaode(sample_count,amapkey):
 
 
 def test_transform():
-    ex_trans = eviltransform_extra.Eviltransform_extra()
+    ex_trans = eviltransform_rectify.Eviltransform_rectify()
 
     for x in xrange(0,10):
         t_x = 100 + x * random.random()

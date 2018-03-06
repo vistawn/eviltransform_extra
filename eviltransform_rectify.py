@@ -2,7 +2,7 @@ import eviltransform
 from rtree import index
 
 
-class Eviltransform_extra(object):
+class Eviltransform_rectify(object):
 
     __gcps = {}
     p = index.Property()
