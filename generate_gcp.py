@@ -3,13 +3,16 @@ import time
 import json
 import logging
 import config
-import eviltransform
+from pygcj import GCJProj
 
 logging.basicConfig(level=logging.DEBUG)
 
 import sys
 if sys.version_info >= (3, 0):
     xrange = range
+
+
+gcjproj = GCJProj()
 
 
 def generate_gcp_origin(interval):
@@ -83,7 +86,7 @@ def query_gaode(gcps_84,amap_key):
     for i in xrange(0,len(gd_array)):
         gd_x, gd_y = map(float,gd_array[i].split(','))
         gcp84_x, gcp84_y = gcps_84[i]
-        local_trans_y, local_trans_x = eviltransform.transform(
+        local_trans_y, local_trans_x = gcjproj.wgs_to_gcj_raw(
             round(gcp84_y, 6), round(gcp84_x, 6))
         delta_x = gd_x - local_trans_x
         delta_y = gd_y - local_trans_y

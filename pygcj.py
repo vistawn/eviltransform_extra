@@ -1,8 +1,23 @@
+import math
 import eviltransform
 from rtree import index
 
+def great_circle_distance(lat1, lon1, lat2, lon2):
+    r = 6371009.0
+    lat1 = math.radians(lat1)
+    lon1 = math.radians(lon1)
+    lat2 = math.radians(lat2)
+    lon2 = math.radians(lon2)
+    londelta = lon2 - lon1
+    a = math.pow(math.cos(lat2) * math.sin(londelta), 2) + math.pow(
+        math.cos(lat1) * math.sin(lat2) - math.sin(lat1) * math.cos(lat2) * math.cos(londelta), 2)
+    b = math.sin(lat1) * math.sin(lat2) + math.cos(lat1) * math.cos(lat2) * math.cos(londelta)
+    angle = math.atan2(math.sqrt(a), b)
 
-class Eviltransform_rectify(object):
+    return angle * r
+
+
+class GCJProj(object):
 
     __gcps = {}
     p = index.Property()
@@ -35,6 +50,40 @@ class Eviltransform_rectify(object):
         index = list(self.idx2d.nearest((110, 45)))[0]
         p = self.__gcps[index]
         return p['delta_y'], p['delta_x']
+    
+    def wgs_to_gcj_raw(self, lat, lng):
+        return eviltransform.transform(lat, lng)
+
+    def gcj_to_wgs_raw(self, lat, lng, threshold=0.000001):
+        if eviltransform.outOfChina(lat, lng):
+            return lat, lng
+        delta = 0.01
+        d_lat = d_lng = delta
+        min_lat = lat - d_lat
+        min_lng = lng - d_lng
+        max_lat = lat + d_lat
+        max_lng = lng + d_lng
+        
+        w_lat = lat
+        w_lng = lng
+        while abs(d_lat) > threshold and abs(d_lng) > threshold:
+            w_lat = (min_lat + max_lat) / 2
+            w_lng = (min_lng + max_lng) / 2
+            tmp_lat, tmp_lng = self.wgs_to_gcj_raw(w_lat, w_lng)
+            d_lat = tmp_lat - lat
+            d_lng = tmp_lng - lng
+            if abs(d_lat) < threshold and abs(d_lng) < threshold:
+                return w_lat, w_lng
+            if d_lat > 0:
+                max_lat = w_lat
+            else:
+                min_lat = w_lat
+            if d_lng > 0:
+                max_lng = w_lng
+            else:
+                min_lng = w_lng
+        
+        return w_lat, w_lng
 
     def wgs_to_gcj(self, lat, lng):
         """ wgs84 to gcj02

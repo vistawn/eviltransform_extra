@@ -2,7 +2,7 @@ from __future__ import print_function
 import random, time, requests
 import math, numpy
 import eviltransform
-from eviltransform_rectify import Eviltransform_rectify
+from pygcj import GCJProj
 import distance_calculator
 import config
 
@@ -22,7 +22,7 @@ def performance_test(points_count):
     print('start transform -- ' + time.ctime())
     print('init -- ' + time.ctime())
     start = time.time()
-    trans = Eviltransform_rectify()
+    trans = GCJProj()
     stop = time.time()
     print('init finish. -- ' + time.ctime())
     print('init seconds: ' + str(stop - start))
@@ -56,7 +56,7 @@ def test_gaode(sample_count,amapkey):
     interval_x = max_x - min_x
     interval_y = max_y - min_y
 
-    ex_trans = Eviltransform_rectify()
+    ex_trans = GCJProj()
 
     dis_loc = []
     dis_ex = []
@@ -83,7 +83,7 @@ def test_gaode(sample_count,amapkey):
 
 
 def test_transform():
-    ex_trans = Eviltransform_rectify()
+    ex_trans = GCJProj()
 
     for x in xrange(0,10):
         t_x = 100 + x * random.random()
