@@ -3,7 +3,7 @@ import random, time, requests
 import math, numpy
 import eviltransform
 from pygcj import GCJProj
-import distance_calculator
+from pygcj import great_circle_distance
 import config
 
 import sys
@@ -67,8 +67,8 @@ def test_gaode(sample_count,amapkey):
         ex_y, ex_x = ex_trans.wgs_to_gcj(q_y,q_x)
         gaode_y, gaode_x = querygaode(q_y, q_x, amapkey)
 
-        loc_distance = distance_calculator.calculate_distance(gaode_y,gaode_x,loc_y,loc_x)
-        ex_distance = distance_calculator.calculate_distance(gaode_y, gaode_x, ex_y, ex_x)
+        loc_distance = great_circle_distance(gaode_y,gaode_x,loc_y,loc_x)
+        ex_distance = great_circle_distance(gaode_y, gaode_x, ex_y, ex_x)
 
         dis_loc.append(loc_distance)
         dis_ex.append(ex_distance)
