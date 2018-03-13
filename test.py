@@ -123,7 +123,7 @@ def test_transform():
         print('wgs:({},{}) to_gcj:({},{}) back_to_wgs:({},{})'.format(wgs_y,wgs_x,y1,x1,y,x))
 
 
-test_gaode('9a3d196899d51b793a94c565ce904f2d')
+test_gaode('your amap key')
 
 #performance_test(50000)
 
