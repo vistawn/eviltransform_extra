@@ -47,7 +47,7 @@ class GCJProj(object):
                 id += 1
 
     def __find_delta(self, lat, lng):
-        index = list(self.idx2d.nearest((110, 45)))[0]
+        index = list(self.idx2d.nearest((lng, lat)))[0]
         p = self.__gcps[index]
         return p['delta_y'], p['delta_x']
     

@@ -1,7 +1,6 @@
 from __future__ import print_function
 import random, time, requests
-import math, numpy
-import eviltransform
+import math
 from pygcj import GCJProj
 from pygcj import great_circle_distance
 import config
@@ -10,12 +9,12 @@ import sys
 if sys.version_info >= (3, 0):
     xrange = range
 
-min_x = config.test_extent['min_lng'] + 0.0
-min_y = config.test_extent['min_lat'] + 0.0
-max_x = config.test_extent['max_lng'] + 0.0
-max_y = config.test_extent['max_lat'] + 0.0
-interval_x = max_x - min_x
-interval_y = max_y - min_y
+min_lng = config.test_extent['min_lng'] + 0.0
+min_lat = config.test_extent['min_lat'] + 0.0
+max_lng = config.test_extent['max_lng'] + 0.0
+max_lat = config.test_extent['max_lat'] + 0.0
+interval_lng = max_lng - min_lng
+interval_lat = max_lat - min_lat
 
 def performance_test(points_count):
 
@@ -28,15 +27,20 @@ def performance_test(points_count):
     print('init seconds: ' + str(stop - start))
     start = time.time()
     for x in xrange(0,points_count):
-        trans.wgs_to_gcj(min_y + interval_y * random.random(), min_x + interval_x * random.random())
+        trans.wgs_to_gcj(min_lat + interval_lat * random.random(), min_lng + interval_lng * random.random())
     
     stop = time.time()
     print('finish. -- ' + time.ctime())
     print('transform seconds: ' + str(stop - start))
 
-def querygaode(lat,lng,amapkey):
+
+def querygaode(wgs_points, amapkey):
+    locstr = ''
+    for point in wgs_points:
+        locstr += str(point[1]) + ',' + str(point[0]) + '|'
+    
     reqdata = {
-        'locations': str(lng) + ',' + str(lat),
+        'locations': locstr,
         'coordsys': 'gps',
         'output': 'json',
         'key': amapkey
@@ -48,38 +52,62 @@ def querygaode(lat,lng,amapkey):
 
     r_json = r.json()
     gd_str = r_json['locations']
-    gd_coords = gd_str.split(',')
-    return float(gd_coords[1]), float(gd_coords[0])
+    gd_coords = gd_str.split(';')
+    result = []
+    for gd_coord in gd_coords:
+        lnglat = gd_coord.split(',')
+        result.append((float(lnglat[1]), float(lnglat[0])))
+    return result
 
 
-def test_gaode(sample_count,amapkey):
-    interval_x = max_x - min_x
-    interval_y = max_y - min_y
+def statistic(arry):
+    l = len(arry)
+    s = sum(arry)
+    m = s/l
+    d = 0
+    for i in arry:
+        d += (i - m)**2
+    stdev = (d/(l-1)) ** 0.5
+    return (m,stdev)
 
-    ex_trans = GCJProj()
+def test_gaode(amapkey):
 
-    dis_loc = []
-    dis_ex = []
-    for x in xrange(0,sample_count):
-        q_x = round(min_x + interval_x * random.random(),6)
-        q_y = round(min_y + interval_y * random.random(),6)
-        loc_y,loc_x = eviltransform.transform(q_y, q_x)
-        ex_y, ex_x = ex_trans.wgs_to_gcj(q_y,q_x)
-        gaode_y, gaode_x = querygaode(q_y, q_x, amapkey)
+    trans = GCJProj()
 
-        loc_distance = great_circle_distance(gaode_y,gaode_x,loc_y,loc_x)
-        ex_distance = great_circle_distance(gaode_y, gaode_x, ex_y, ex_x)
+    wgs_points = []
+    raw_points = []
+    rectify_points = []
 
-        dis_loc.append(loc_distance)
-        dis_ex.append(ex_distance)
-        print(loc_distance, ex_distance)
-        time.sleep(0.1)
+    for x in xrange(0,40):
+        lng = round(min_lng + interval_lng * random.random(),6)
+        lat = round(min_lat + interval_lat * random.random(),6)
+        wgs_points.append((lat,lng))
+        raw_points.append(trans.wgs_to_gcj_raw(lat, lng))
+        rectify_points.append(trans.wgs_to_gcj(lat, lng))
     
+    gd_points = querygaode(wgs_points,amapkey)
 
-    print('avg_loc: ' + str(numpy.average(dis_loc)) +
-          ' std_loc:' + str(numpy.std(dis_loc)) +
-          ' avg_ex:' + str(numpy.average(dis_ex)) +
-          ', std_ex:' + str(numpy.std(dis_ex)))
+    diff_ori = []
+    diff_raw = []
+    diff_rectify = []
+    
+    for x in xrange(0,40):
+        d_ori = great_circle_distance(wgs_points[x][0],wgs_points[x][1],gd_points[x][0],gd_points[x][1])
+        diff_ori.append(d_ori)
+        d_raw = great_circle_distance(
+            raw_points[x][0], raw_points[x][1], gd_points[x][0], gd_points[x][1])
+        diff_raw.append(d_raw)
+        d_rectify = great_circle_distance(
+            rectify_points[x][0], rectify_points[x][1], gd_points[x][0], gd_points[x][1])
+        diff_rectify.append(d_rectify)
+
+    print('wgs<->gcj distance mean: ' + str(statistic(diff_ori)[0]) + '\r\n' +
+          'wgs<->gcj distance stdev: ' + str(statistic(diff_ori)[1]) + '\r\n' +
+          'raw<->gcj distance mean: ' + str(statistic(diff_raw)[0]) + '\r\n' +
+          'raw<->gcj distance stdev: ' + str(statistic(diff_raw)[1]) + '\r\n' +
+          'rectify<->gcj distance mean: ' + str(statistic(diff_rectify)[0]) + '\r\n' +
+          'rectify<->gcj distance stdev: ' + str(statistic(diff_rectify)[1]))
+
 
 
 def test_transform():
@@ -95,11 +123,11 @@ def test_transform():
         print('wgs:({},{}) to_gcj:({},{}) back_to_wgs:({},{})'.format(wgs_y,wgs_x,y1,x1,y,x))
 
 
-#test_gaode(30)
+test_gaode('9a3d196899d51b793a94c565ce904f2d')
 
 #performance_test(50000)
 
-if __name__ == "__main__":
-    import profile
-    profile.run("performance_test(5000)")
-    test_transform()
+# if __name__ == "__main__":
+#     import profile
+#     profile.run("performance_test(5000)")
+#     test_transform()
