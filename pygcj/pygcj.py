@@ -1,3 +1,4 @@
+import os
 import math
 import eviltransform
 from rtree import index
@@ -28,7 +29,8 @@ class GCJProj(object):
         self.__init_gcp()
 
     def __init_gcp(self):
-        with open('gcps_gd', 'r') as f:
+        gcpfile = os.path.join(os.path.dirname(__file__), 'gcps_gd')
+        with open(gcpfile, 'r') as f:
             lines = f.readlines()
             id = 0
             for line in lines:

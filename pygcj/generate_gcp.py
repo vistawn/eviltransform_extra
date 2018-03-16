@@ -1,3 +1,6 @@
+
+from __future__ import print_function
+import sys,os
 import requests
 import time
 import json
@@ -129,16 +132,40 @@ def generate_gcp_gaode(interval,amap_key):
 
     results += query_gaode(gcps_84[start:len(gcps_84)], amap_key)
 
-
-    with open('gcps_gd', 'w') as newfile:
+    with open(os.path.join(os.path.dirname(__file__), 'gcps_gd'), 'w') as newfile:
         newfile.writelines(results)
     
     logging.info('finish.')
 
 
+def print_help():
+    print('Usage:\n'
+          '  generate_gcp <interval> <amapkey> \n'
+          'interval:\n'
+          '  control points grid interval by decimal degree. eg:0.1\n'
+          'amapkey:\n'
+          '  amap developer api key. visit "http://lbs.amap.com/" and require your key.\n'
+          )
+
+
+def main(argvs):
+    if len(argvs) < 3:
+        print_help()
+
+    try:
+        interval = float(argvs[1])
+    except:
+        print_help()
+        return
+
+    try:
+        amapkey = str(argvs[2])
+    except:
+        print_help()
+        return
+
+    generate_gcp_gaode(float(interval), amapkey)
 
 if __name__ == '__main__':
-    interval = raw_input('please input control grid interval(decimal degree):')
-    gaode_key = raw_input('please input amap key:')
-    generate_gcp_gaode(float(interval),gaode_key)
+    main(sys.argv)
 

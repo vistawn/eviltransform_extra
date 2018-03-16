@@ -3,7 +3,7 @@ import random, time, requests
 import math
 from pygcj import GCJProj
 from pygcj import great_circle_distance
-import config
+from pygcj import config
 
 import sys
 if sys.version_info >= (3, 0):
@@ -123,9 +123,9 @@ def test_transform():
         print('wgs:({},{}) to_gcj:({},{}) back_to_wgs:({},{})'.format(wgs_y,wgs_x,y1,x1,y,x))
 
 
-test_gaode('your amap key')
+#test_gaode('your amap key')
 
-#performance_test(50000)
+performance_test(50000)
 
 # if __name__ == "__main__":
 #     import profile
