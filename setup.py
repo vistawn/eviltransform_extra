@@ -59,20 +59,7 @@ if __name__ == "__main__":
         "Unix",
     ]
     
-    CLASSIFIERS = [
-        "Development Status :: 4 - Beta",
-        "Intended Audience :: Developers",
-        "License :: OSI Approved :: APACHE License",
-        "Natural Language :: English",
-        "Operating System :: Microsoft :: Windows",
-        "Operating System :: MacOS",
-        "Operating System :: Unix",
-        "Programming Language :: Python",
-        "Programming Language :: Python :: 2.7",
-        "Programming Language :: Python :: 3.4",
-        "Programming Language :: Python :: 3.5",
-        "Programming Language :: Python :: 3.6",
-    ]
+    
 
     REQUIRES = list()
     f = open("requirements.txt", "rb")
@@ -98,7 +85,6 @@ if __name__ == "__main__":
         py_modules=PY_MODULES,
         url=URL,
         download_url=DOWNLOAD_URL,
-        classifiers=CLASSIFIERS,
         platforms=PLATFORMS,
         license=LICENSE,
         install_requires=REQUIRES,
