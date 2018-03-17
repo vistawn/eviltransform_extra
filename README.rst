@@ -1,9 +1,9 @@
 pygcj
 ===================
 
-GCJ02 and wgs84 transform
+A GCJ02 and WGS-84 coordinate converter.
 
-increase the accuracy by control points
+Increase the accuracy by control points
 
 Generate Control Points
 -----------------------
@@ -28,7 +28,7 @@ Transform between WGS84 and GCJ02
     # gcj to wgs84
     wgs_lat, wgs_lon = trans.gcj_to_wgs(45.2,112.8)
 
-    # gcj to wgs84 and specific threshold
+    # gcj to wgs84 and specific threshold(default is 0.000001)
     wgs_lat, wgs_lon = trans.gcj_to_wgs(45.2,112.8,0.00000001)
 
 accuracy test (use default control points)
