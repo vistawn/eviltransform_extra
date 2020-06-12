@@ -84,6 +84,12 @@ if __name__ == "__main__":
         package_data=PACKAGE_DATA,
         py_modules=PY_MODULES,
         url=URL,
+        classifiers=[
+            "Programming Language :: Python :: 2",
+            "Programming Language :: Python :: 3",
+            "License :: OSI Approved :: Apache Software License",
+            "Operating System :: OS Independent",
+        ],
         download_url=DOWNLOAD_URL,
         platforms=PLATFORMS,
         license=LICENSE,
