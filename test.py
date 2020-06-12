@@ -1,8 +1,9 @@
 from __future__ import print_function
-import random, time, requests
-import math
-from pygcj import GCJProj
-from pygcj import great_circle_distance
+import random
+import time
+import requests
+from pygcj.pygcj import GCJProj
+from pygcj.pygcj import great_circle_distance
 from pygcj import config
 
 import sys

@@ -1,11 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from pygcj import GCJProj
-from pygcj import great_circle_distance
-import config
-
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __short_description__ = "Transfrom coordinate between China GCJ02(colloquially Mars Coordinates) and WGS-84 with high precision"
 __license__ = "Apache-2.0"
 __author__ = "Jiang Yunpeng @vistawn"

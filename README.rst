@@ -20,7 +20,7 @@ Transform between WGS84 and GCJ02
 
 .. code:: python
 
-    from pygcj import GCJProj
+    from pygcj.pygcj import GCJProj
     trans = GCJProj()
     # wgs84 to gcj
     gcj_lat, gcj_lon = trans.wgs_to_gcj(45.2,112.8)

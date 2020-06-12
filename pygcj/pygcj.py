@@ -1,6 +1,6 @@
 import os
 import math
-import eviltransform
+from . import eviltransform
 from rtree import index
 
 def great_circle_distance(lat1, lon1, lat2, lon2):

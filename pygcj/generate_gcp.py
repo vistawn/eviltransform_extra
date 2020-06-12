@@ -1,9 +1,8 @@
 
 from __future__ import print_function
-import sys,os
+import os
 import requests
 import time
-import json
 import logging
 import config
 from pygcj import GCJProj
